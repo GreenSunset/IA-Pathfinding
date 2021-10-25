@@ -281,7 +281,6 @@ MonoBehaviour:
   StartPrefab: {fileID: 9194595089237460820, guid: f251199825af50a4c93cd476314be7be, type: 3}
   EndPrefab: {fileID: 2053711608380531070, guid: 6906a57cd07c3754eb4d5db5b7b3c617, type: 3}
   ObstaclePrefab: {fileID: 7378735193548317969, guid: bb906116be8c0e842a7cb28f12e8e2b2, type: 3}
-  Algorithm: 0
 --- !u!4 &895279999
 Transform:
   m_ObjectHideFlags: 0
@@ -312,10 +311,7 @@ MonoBehaviour:
   SolutionPrefab: {fileID: 2315859526618772638, guid: 2ca10833fc04da34bacdb1745dc04ca4, type: 3}
   ExploredContainer: {fileID: 1065914054}
   SolutionContainer: {fileID: 456444031}
-  SolutionIndexes: 
-  ExpandIndex: 0
-  CostWeight: 1
-  Speed: 1
+  Speed: 5
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,10 +48,32 @@ public class ButtonsFunctions : MonoBehaviour
     // Empezar la simulacion
     public void StartSimulation()
     {
+        if (!WorldInfo.ManualObjectives) GenerateObjectives(TemporalData.distance);
+        if (!WorldInfo.ManualObstacles) GenerateObstacles(TemporalData.obstacles);
         if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("ManualSelection");
     }
 
     // Generar Obstaculos aleatorios
+    private void GenerateObstacles(float density)
+    {
+        //Brute force
+        Vector2Int AuxCoordinates;
+        for (int i = Mathf.RoundToInt((WorldInfo.Size.x * WorldInfo.Size.y - (WorldInfo.Beginning == WorldInfo.End? 1:2)) * density / 100f); i > 0;)
+        {
+            AuxCoordinates = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
+            if (WorldInfo.Beginning != AuxCoordinates && WorldInfo.End != AuxCoordinates && !WorldInfo.Obstacles.Contains(AuxCoordinates))
+            {
+                WorldInfo.Obstacles.Add(AuxCoordinates);
+                i--;
+            }
+        }
+    }
+
 
     // Generar la distancia del inicio y final
+    private void GenerateObjectives(float distance)
+    {
+        //No hace nada actualmente
+        WorldInfo.ManualObjectives = true;
+    }
 }

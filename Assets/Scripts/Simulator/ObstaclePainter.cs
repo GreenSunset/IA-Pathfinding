@@ -31,13 +31,17 @@ public class ObstaclePainter : MonoBehaviour
 
     private void Start()
     {
-        WorldInfo.Size = new Vector2Int(10, 10);
         Map.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 0, WorldInfo.Size.y / 2 - .5f);
         Map.transform.localScale = new Vector3(WorldInfo.Size.x / 10f, 1, WorldInfo.Size.y / 10f);
         MainCamera.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 5, WorldInfo.Size.y / 2 - .5f);
         MainCamera.GetComponent<Camera>().orthographicSize = Mathf.Max(WorldInfo.Size.x, WorldInfo.Size.y)/2f;
         Map.GetComponent<Renderer>().material.mainTextureScale = new Vector2(WorldInfo.Size.x, WorldInfo.Size.y);
         //Escalar Cámara
+        for (int i = 0; WorldInfo.Obstacles != null && i < WorldInfo.Obstacles.Count; i++)
+        {
+            GameObject Aux = Instantiate(ObstaclePrefab);
+            Aux.transform.position = new Vector3(WorldInfo.Obstacles[i].x, 0.1f, WorldInfo.Obstacles[i].y);
+        }
         if (WorldInfo.ManualObstacles) PaintingObstacles = true;
         if (WorldInfo.ManualObjectives) SettingBeginning = true;
     }

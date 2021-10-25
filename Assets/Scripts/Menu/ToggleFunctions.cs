@@ -12,13 +12,13 @@ public class ToggleFunctions : MonoBehaviour
         if (!myToggle.isOn)
         {
             mySliderObstacle.gameObject.SetActive(true);
-            TemporalData.manualObstacles = false;
+            WorldInfo.ManualObstacles = false;
             Debug.Log("Obstaculos aleatorios.");
         }
         else
         {
             mySliderObstacle.gameObject.SetActive(false);
-            TemporalData.manualObstacles = true;
+            WorldInfo.ManualObstacles = true;
             Debug.Log("Obstaculos manuales.");
         }
     }
@@ -28,13 +28,13 @@ public class ToggleFunctions : MonoBehaviour
         if (!myToggle.isOn)
         {
             mySliderDistance.gameObject.SetActive(true);
-            TemporalData.manualDistance = false;
+            WorldInfo.ManualObjectives = false;
             Debug.Log("Distancia aleatoria.");
         }
         else
         {
             mySliderDistance.gameObject.SetActive(false);
-            TemporalData.manualDistance = true;
+            WorldInfo.ManualObjectives = true;
             Debug.Log("Distancia manual.");
         }
     }
