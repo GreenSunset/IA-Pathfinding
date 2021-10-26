@@ -10,6 +10,8 @@ public class ButtonsFunctions : MonoBehaviour
     int distance;
     public Canvas MenuPrincipal;
     public Canvas AjusteTablero;
+    bool isString;
+    int temp;
     // METODOS PUBLICOS
     private void Start()
     {
@@ -24,14 +26,24 @@ public class ButtonsFunctions : MonoBehaviour
     }
     // Guardar el numero de filas
     public void SetRows(string r) {
-        WorldInfo.Size.x = int.Parse(r); 
-        Debug.Log("Rows entered");
+        isString = int.TryParse(r, out temp);
+        if (temp < 1)
+        {
+            WorldInfo.Size.x = 10;
+        }
+        else WorldInfo.Size.x = temp;
+        Debug.Log("Rows entered: " + WorldInfo.Size.x);
     }
     // Guardar el numero de columnas
     public void SetCols(string c)
     {
-        WorldInfo.Size.y = int.Parse(c); 
-        Debug.Log("Cols entered");
+        isString = int.TryParse(c, out temp);
+        if (temp < 1)
+        {
+            WorldInfo.Size.y = 10;
+        }
+        else WorldInfo.Size.y = temp;
+        Debug.Log("Rows entered:" + WorldInfo.Size.y);
     }
     // Guardar la distancia entre el comienzo y  el final
     public void SetDistance(string d)
@@ -52,7 +64,6 @@ public class ButtonsFunctions : MonoBehaviour
         if (!WorldInfo.ManualObstacles) GenerateObstacles(TemporalData.obstacles);
         if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("ManualSelection");
     }
-
     // Generar Obstaculos aleatorios
     private void GenerateObstacles(float density)
     {
@@ -68,8 +79,6 @@ public class ButtonsFunctions : MonoBehaviour
             }
         }
     }
-
-
     // Generar la distancia del inicio y final
     private void GenerateObjectives(float distance)
     {

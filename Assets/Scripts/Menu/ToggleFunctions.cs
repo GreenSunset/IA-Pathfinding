@@ -38,4 +38,18 @@ public class ToggleFunctions : MonoBehaviour
             Debug.Log("Distancia manual.");
         }
     }
+    // Guarda si queremos poner la distancia del comienzo al final manualmente o no
+    public void MoveToggle(Toggle myToggle)
+    {
+        if (myToggle.isOn)
+        {
+            WorldInfo.DoDiagonals = true;
+            Debug.Log("8 movimientos.");
+        }
+        else
+        {
+            WorldInfo.DoDiagonals = false;
+            Debug.Log("4 movimientos.");
+        }
+    }
 }
