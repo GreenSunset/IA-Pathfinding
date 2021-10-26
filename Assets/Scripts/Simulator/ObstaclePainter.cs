@@ -6,16 +6,15 @@ using UnityEngine.SceneManagement;
 public class ObstaclePainter : MonoBehaviour
 {
     //Objetos
-    public GameObject Map;
-    public GameObject MainCamera;
 
     //prefabs
     public GameObject BeginningPrefab;
     public GameObject EndPrefab;
     public GameObject ObstaclePrefab;
+    public bool AllDone = false;
 
     //Redundant if I merge Scenes 1 and 2
-    public List<GameObject> ProvisionalObstacles;
+    public List<GameObject> ObstacleInstances;
     private GameObject ProvisionalEnd;
     private GameObject ProvisionalBeginning;
 
@@ -23,7 +22,6 @@ public class ObstaclePainter : MonoBehaviour
     private bool locked = false;
     private bool PaintingObstacles = false;
     private bool SettingBeginning = false;
-    private bool AllDone = false;
     private RaycastHit hit;
     private Ray ray => Camera.main.ScreenPointToRay(Input.mousePosition);
     private Vector2Int Coordinates;
@@ -31,24 +29,12 @@ public class ObstaclePainter : MonoBehaviour
 
     private void Start()
     {
-        Map.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 0, WorldInfo.Size.y / 2 - .5f);
-        Map.transform.localScale = new Vector3(WorldInfo.Size.x / 10f, 1, WorldInfo.Size.y / 10f);
-        MainCamera.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 5, WorldInfo.Size.y / 2 - .5f);
-        MainCamera.GetComponent<Camera>().orthographicSize = Mathf.Max(WorldInfo.Size.x, WorldInfo.Size.y)/2f;
-        Map.GetComponent<Renderer>().material.mainTextureScale = new Vector2(WorldInfo.Size.x, WorldInfo.Size.y);
-        //Escalar Cámara
-        for (int i = 0; WorldInfo.Obstacles != null && i < WorldInfo.Obstacles.Count; i++)
-        {
-            GameObject Aux = Instantiate(ObstaclePrefab);
-            Aux.transform.position = new Vector3(WorldInfo.Obstacles[i].x, 0.1f, WorldInfo.Obstacles[i].y);
-        }
         if (WorldInfo.ManualObstacles) PaintingObstacles = true;
         if (WorldInfo.ManualObjectives) SettingBeginning = true;
     }
 
     public void Update()
     {
-        if (AllDone) SceneManager.LoadScene("Simulation");
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("ClickDown");
@@ -101,9 +87,9 @@ public class ObstaclePainter : MonoBehaviour
             Coordinates = new Vector2Int(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
             if (WorldInfo.Obstacles.Contains(Coordinates))
             {
-                obj = ProvisionalObstacles[WorldInfo.Obstacles.IndexOf(Coordinates)];
+                obj = ObstacleInstances[WorldInfo.Obstacles.IndexOf(Coordinates)];
                 Destroy(obj);
-                ProvisionalObstacles.Remove(obj);
+                ObstacleInstances.Remove(obj);
                 WorldInfo.Obstacles.Remove(Coordinates);
                 while (locked)
                 {
@@ -114,9 +100,9 @@ public class ObstaclePainter : MonoBehaviour
                         Coordinates = new Vector2Int(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
                         if (WorldInfo.Obstacles.Contains(Coordinates) && Coordinates != WorldInfo.Beginning && Coordinates != WorldInfo.End)
                         {
-                            obj = ProvisionalObstacles[WorldInfo.Obstacles.IndexOf(Coordinates)];
+                            obj = ObstacleInstances[WorldInfo.Obstacles.IndexOf(Coordinates)];
                             Destroy(obj);
-                            ProvisionalObstacles.Remove(obj);
+                            ObstacleInstances.Remove(obj);
                             WorldInfo.Obstacles.Remove(Coordinates);
                         }
                     }
@@ -125,7 +111,7 @@ public class ObstaclePainter : MonoBehaviour
             else if (WorldInfo.Obstacles.Count < (WorldInfo.Size.x * WorldInfo.Size.y) - 1 && Coordinates != WorldInfo.Beginning && Coordinates != WorldInfo.End)
             {
                 obj = Instantiate(ObstaclePrefab, new Vector3(Coordinates.x, .3f, Coordinates.y), Quaternion.identity);
-                ProvisionalObstacles.Add(obj);
+                ObstacleInstances.Add(obj);
                 WorldInfo.Obstacles.Add(Coordinates);
                 while (locked && WorldInfo.Obstacles.Count < (WorldInfo.Size.x * WorldInfo.Size.y) - 1)
                 {
@@ -137,7 +123,7 @@ public class ObstaclePainter : MonoBehaviour
                         if (!WorldInfo.Obstacles.Contains(Coordinates) && Coordinates != WorldInfo.Beginning && Coordinates != WorldInfo.End)
                         {
                             obj = Instantiate(ObstaclePrefab, new Vector3(Coordinates.x, .3f, Coordinates.y), Quaternion.identity);
-                            ProvisionalObstacles.Add(obj);
+                            ObstacleInstances.Add(obj);
                             WorldInfo.Obstacles.Add(Coordinates);
                         }
                     }
