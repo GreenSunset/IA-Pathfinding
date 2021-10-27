@@ -31,7 +31,7 @@ public class ObstaclePainter : MonoBehaviour
 
     private void Start()
     {
-        Map.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 0, WorldInfo.Size.y / 2 - .5f);
+        Map.transform.position = new Vector3(WorldInfo.Size.x / 2f - .5f, 0, WorldInfo.Size.y / 2f - .5f);
         Map.transform.localScale = new Vector3(WorldInfo.Size.x / 10f, 1, WorldInfo.Size.y / 10f);
         MainCamera.transform.position = new Vector3(WorldInfo.Size.x / 2 - .5f, 5, WorldInfo.Size.y / 2 - .5f);
         MainCamera.GetComponent<Camera>().orthographicSize = Mathf.Max(WorldInfo.Size.x, WorldInfo.Size.y)/2f;

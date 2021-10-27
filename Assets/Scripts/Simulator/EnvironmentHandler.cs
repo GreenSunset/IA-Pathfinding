@@ -13,7 +13,7 @@ public class EnvironmentHandler : MonoBehaviour
     public GameObject EndPrefab;
     public GameObject ObstaclePrefab;
 
-
+    public float targetaspect = 16.0f / 9.0f;
     private void Start()
     {
         //Set Up Map
@@ -51,5 +51,32 @@ public class EnvironmentHandler : MonoBehaviour
         Solver.Restart();
         IEnumerator coroutine = Solver.SolveCoroutine();
         StartCoroutine(coroutine);
+    }
+
+    private void SetUpCamera()
+    {
+        // Ratio de cámara fijo
+        float windowaspect = Screen.width / (float)Screen.height;
+        float scaleheight = windowaspect / targetaspect;
+        Camera camera = MainCamera.GetComponent<Camera>();
+        Rect rect = camera.rect;
+        if (scaleheight < 1.0f)
+        {
+            rect.width = 1.0f;
+            rect.height = scaleheight;
+            rect.x = 0;
+            rect.y = (1.0f - scaleheight) / 2.0f;
+            camera.rect = rect;
+        }
+        else
+        {
+            float scalewidth = 1.0f / scaleheight;
+            rect.width = scalewidth;
+            rect.height = 1.0f;
+            rect.x = (1.0f - scalewidth) / 2.0f;
+            rect.y = 0;
+            camera.rect = rect;
+        }
+        //camera.orthographicSize = Mathf.Max(WorldInfo.Size.x, WorldInfo.Size.y) / 2;
     }
 }
