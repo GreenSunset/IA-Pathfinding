@@ -48,9 +48,6 @@ public class EnvironmentHandler : MonoBehaviour
 
         //Start Solver
         AStarSolver Solver = GetComponent<AStarSolver>();
-        Solver.Restart();
-        IEnumerator coroutine = Solver.SolveCoroutine();
-        StartCoroutine(coroutine);
     }
 
     private void SetUpCamera()

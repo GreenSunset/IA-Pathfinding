@@ -7,8 +7,8 @@ public class WorldInfo : MonoBehaviour
     // Tamaño del mapa
     public static Vector2Int Size = new Vector2Int(10,10);
     // Posicion del Comienzo y Final
-    public static Vector2Int Beginning = new Vector2Int(-1, -1);
-    public static Vector2Int End = new Vector2Int(-1, -1);
+    public static Vector2Int Beginning = ConstCoordinates.Invalid;
+    public static Vector2Int End = ConstCoordinates.Invalid;
     // Posicion de los Obstaculos
     public static List<Vector2Int> Obstacles = new List<Vector2Int>();
     // Heuristica

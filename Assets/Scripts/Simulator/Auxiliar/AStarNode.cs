@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class ConstCoordinates
+{
+    static public Vector2Int Invalid = new Vector2Int(-1, -1);
+
+    static public Vector2Int[] BasicDirections = new Vector2Int[4]
+        {new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0)};
+    static public Vector2Int[] Diagonals = new Vector2Int[4]
+        {new Vector2Int(-1, -1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(1, 1)};
+}
 public class ExploredNode
 {
     public Vector2Int Position;
