@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Master : MonoBehaviour
+public class GeneralManager : MonoBehaviour
 {
     //Organiza el resto de scripts y transiciona entre estados del simulador
 
@@ -10,6 +10,7 @@ public class Master : MonoBehaviour
     private UIManager UI;
     private WorldPainter World;
     private AStarSolver Solver;
+    private AStarSolver2 Solver2;
 
     //Variables de estado
     private bool IsPainting = false;
@@ -20,9 +21,11 @@ public class Master : MonoBehaviour
         UI = GetComponent<UIManager>();
         World = GetComponent<WorldPainter>();
         Solver = GetComponent<AStarSolver>();
+        Solver2 = GetComponent<AStarSolver2>();
         UI.enabled = true;
         World.enabled = true;
         Solver.enabled = false;
+        Solver2.enabled = false;
 
         //Establecer Cámara
         UI.SetUpCamera();
@@ -48,8 +51,9 @@ public class Master : MonoBehaviour
     {
         IsPainting = false;
         World.enabled = false;
-        Solver.enabled = true;
+        Solver2.enabled = true;
         UI.SwitchToSolve();
+        Solver2.Solve();
     }
 
     private void StartReview()

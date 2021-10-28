@@ -826,6 +826,7 @@ GameObject:
   - component: {fileID: 1595505187}
   - component: {fileID: 1595505186}
   - component: {fileID: 1595505185}
+  - component: {fileID: 1595505190}
   m_Layer: 0
   m_Name: Scene Manager
   m_TagString: Untagged
@@ -866,8 +867,9 @@ MonoBehaviour:
   SolutionPrefab: {fileID: 2315859526618772638, guid: 2ca10833fc04da34bacdb1745dc04ca4, type: 3}
   ExploredContainer: {fileID: 521094015}
   SolutionContainer: {fileID: 1142830682}
-  Speed: 1
+  Speed: 416.3
   Step: 0
+  Threshold: 110.78
 --- !u!114 &1595505187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -912,6 +914,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1595505190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595505184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 985f1ae47371b4f4190b23c15ef083e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ExploredPrefab: {fileID: 352424561721415715, guid: ea7d8b1d6d0c83e48a6f7da9ffb6419b, type: 3}
+  SolutionPrefab: {fileID: 2315859526618772638, guid: 2ca10833fc04da34bacdb1745dc04ca4, type: 3}
+  ExploredContainer: {fileID: 521094015}
+  SolutionContainer: {fileID: 1142830682}
+  Speed: 57.51
+  Step: 0
+  Threshold: 0.5
+  NodesExplored: 0
+  NodesGenerated: 0
+  SimulationTime: 0
+  TotalTime: 0
 --- !u!1 &1772678166
 GameObject:
   m_ObjectHideFlags: 0
