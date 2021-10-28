@@ -20,9 +20,9 @@ public class SliderFunction : MonoBehaviour
     void Update()
     {
         myTextObstacle.text = mySliderObstacle.value.ToString("0") + "%";
-        TemporalData.obstacles = (int)mySliderObstacle.value;
+        WorldInfo.numberObstacles = (int)mySliderObstacle.value;
         myTextDistance.text = mySliderDistance.value.ToString("0") + "%";
-        TemporalData.distance = (int)mySliderDistance.value; 
+        WorldInfo.Distance = (int)mySliderDistance.value; 
     }
     public void SetHeuristicAlgorithm()
     {

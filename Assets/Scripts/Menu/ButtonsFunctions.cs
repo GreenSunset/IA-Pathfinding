@@ -60,8 +60,8 @@ public class ButtonsFunctions : MonoBehaviour
     // Empezar la simulacion
     public void StartSimulation()
     {
-        if (!WorldInfo.ManualObjectives) GenerateObjectives(TemporalData.distance);
-        if (!WorldInfo.ManualObstacles) GenerateObstacles(TemporalData.obstacles);
+        if (!WorldInfo.ManualObjectives) GenerateObjectives(WorldInfo.Distance);
+        if (!WorldInfo.ManualObstacles) GenerateObstacles(WorldInfo.numberObstacles);
         if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("ManualSelection");
     }
     // Generar Obstaculos aleatorios

@@ -9,8 +9,10 @@ public class WorldInfo : MonoBehaviour
     // Posicion del Comienzo y Final
     public static Vector2Int Beginning = new Vector2Int(-1, -1);
     public static Vector2Int End = new Vector2Int(-1, -1);
+    public static float Distance = 0f;
     // Posicion de los Obstaculos
     public static List<Vector2Int> Obstacles = new List<Vector2Int>();
+    public static float numberObstacles = 0f;
     // Heuristica
     public static HeuristicFunc Heuristic = new EuclideanHeuristic();
     // Tipo de movimiento
