@@ -62,7 +62,10 @@ public class ButtonsFunctions : MonoBehaviour
     {
         if (!WorldInfo.ManualObjectives) GenerateObjectives(WorldInfo.Distance);
         if (!WorldInfo.ManualObstacles) GenerateObstacles(WorldInfo.numberObstacles);
-        if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("ManualSelection");
+        if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) {
+            if (WorldInfo.ManualObjectives || WorldInfo.ManualObstacles) SceneManager.LoadScene("ManualSelection"); //Cambiado Dario
+            else SceneManager.LoadScene("Simulation");
+        }
     }
     // Generar Obstaculos aleatorios
     private void GenerateObstacles(float density)
@@ -80,9 +83,52 @@ public class ButtonsFunctions : MonoBehaviour
         }
     }
     // Generar la distancia del inicio y final
+    // Poner el punto de comienzo en un punto random
+    // Ver si se puede poner el final
     private void GenerateObjectives(float distance)
     {
+        //bool setBegin = false;
+        int chebysovDistance = (int)Mathf.Round((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y) * (int)distance / 100);
+
+        //Dario
+        int distanceFromCenter = chebysovDistance - ((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y));
+        if (distanceFromCenter > 0)
+        {
+            int yDiff, xDiff;
+            if (Random.Range(0, 2) % 2 == 0)
+            {
+                xDiff = Random.Range(WorldInfo.Size.x % 2 == 0 ? 1 : 0, (WorldInfo.Size.x - 1) / 2 + 1);
+                yDiff = Random.Range(xDiff < distanceFromCenter ? distanceFromCenter : WorldInfo.Size.y % 2 == 0 ? 1 : 0, (WorldInfo.Size.y - 1) / 2 + 1);
+            }
+            else
+            {
+                yDiff = Random.Range(WorldInfo.Size.y % 2 == 0 ? 1 : 0, (WorldInfo.Size.y - 1) / 2 + 1);
+                xDiff = Random.Range(yDiff < distanceFromCenter ? distanceFromCenter : WorldInfo.Size.x % 2 == 0 ? 1 : 0, (WorldInfo.Size.x - 1) / 2 + 1);
+            }
+            WorldInfo.Beginning = new Vector2Int((Random.Range(0, 2) % 2 == 0? 1 : -1) * xDiff + (WorldInfo.Size.x - 1 / 2) + 1, (Random.Range(0, 2) % 2 == 0 ? 1 : -1) * yDiff + (WorldInfo.Size.y - 1 / 2) + 1);
+        }
+        else
+        {
+            WorldInfo.Beginning = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
+        }
+        do
+        {
+            WorldInfo.End = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
+        } while (Mathf.Max(Mathf.Abs(WorldInfo.End.x - WorldInfo.Beginning.x), Mathf.Abs(WorldInfo.End.y - WorldInfo.Beginning.y)) < chebysovDistance);
+        //End Dario
+        /*
+        Vector2Int auxCoordinates;
+        while (!setBegin)
+        {
+            auxCoordinates = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
+            if((auxCoordinates.x <= WorldInfo.Size.x - chebysovDistance || auxCoordinates.x + WorldInfo.Size.x > chebysovDistance) && 
+                (auxCoordinates.y <= WorldInfo.Size.y - chebysovDistance || auxCoordinates.y + WorldInfo.Size.y > chebysovDistance))
+            {
+                WorldInfo.Beginning = auxCoordinates;
+                auxCoordinates = new Vector2Int();
+            }
+        }
         //No hace nada actualmente
-        WorldInfo.ManualObjectives = true;
+        WorldInfo.ManualObjectives = true;*/
     }
 }
