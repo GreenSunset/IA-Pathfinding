@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuPrincipal.unity
     guid: 419937f3e168d034c916ba51c64ffdaa
   - enabled: 1
-    path: Assets/Scenes/Merged Simulation.unity
+    path: Assets/Scenes/Simulation.unity
     guid: 94087cd1794c4d54ebc54518377ba961
   m_configObjects: {}

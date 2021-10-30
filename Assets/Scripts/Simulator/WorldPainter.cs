@@ -24,6 +24,7 @@ public class WorldPainter : MonoBehaviour
     private Ray ray => Camera.main.ScreenPointToRay(Input.mousePosition);
     public bool IsBrushActive = false;
     private bool IsBrushLocked = false;
+    private bool AreObstaclesSet = !WorldInfo.ManualObstacles;
     private bool IsBeginningSet = !WorldInfo.ManualObjectives;
 
     //Pintar Mundo
@@ -61,7 +62,7 @@ public class WorldPainter : MonoBehaviour
             {
                 Debug.Log("ClickDown");
                 IsBrushLocked = true;
-                if (WorldInfo.ManualObstacles) StartCoroutine(ObstaclesBrush());
+                if (!AreObstaclesSet) StartCoroutine(ObstaclesBrush());
                 else if (!IsBeginningSet) StartCoroutine(DragBeginning());
                 else StartCoroutine(DragEnd());
             }
@@ -85,9 +86,9 @@ public class WorldPainter : MonoBehaviour
     public void Forward()
     {
         IsBrushLocked = false;
-        if (WorldInfo.ManualObstacles)
+        if (!AreObstaclesSet)
         {
-            WorldInfo.ManualObstacles = false;
+            AreObstaclesSet = true;
             if (!WorldInfo.ManualObjectives) IsBrushActive = false;
         }
         else if (!IsBeginningSet && WorldInfo.Beginning != ConstCoordinates.Invalid) IsBeginningSet = true;
@@ -98,10 +99,10 @@ public class WorldPainter : MonoBehaviour
     {
         IsBrushLocked = false;
         if (IsBeginningSet) IsBeginningSet = false;
-        else WorldInfo.ManualObstacles = true;
+        else if (AreObstaclesSet) AreObstaclesSet = false;
     }
     //Selección Manual
-    public IEnumerator ObstaclesBrush()
+    private IEnumerator ObstaclesBrush()
     {
         RaycastHit hit;
         Vector2Int Coordinates;
@@ -157,7 +158,7 @@ public class WorldPainter : MonoBehaviour
         }
         yield return null;
     }
-    public IEnumerator DragBeginning()
+    private IEnumerator DragBeginning()
     {
         RaycastHit hit;
         Vector2Int Coordinates;
@@ -193,7 +194,7 @@ public class WorldPainter : MonoBehaviour
         }
         yield return null;
     }
-    public IEnumerator DragEnd()
+    private IEnumerator DragEnd()
     {
         RaycastHit hit;
         Vector2Int Coordinates;

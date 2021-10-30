@@ -62,7 +62,7 @@ public class ButtonsFunctions : MonoBehaviour
     {
         if (!WorldInfo.ManualObjectives) GenerateObjectives(TemporalData.distance);
         if (!WorldInfo.ManualObstacles) GenerateObstacles(TemporalData.obstacles);
-        if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("Merged Simulation");
+        if (WorldInfo.Size.x > 0 && WorldInfo.Size.y > 0) SceneManager.LoadScene("Simulation");
     }
     // Generar Obstaculos aleatorios
     private void GenerateObstacles(float density)

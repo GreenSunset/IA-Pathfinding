@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,6 +14,25 @@ public class UIManager : MonoBehaviour
     public GameObject UIPainter;
     public GameObject UISolving;
     public GameObject UIReview;
+
+    //Objetos con los que interactúa
+    public AStarSolver3 Solver;
+
+    //Objetos Paint UI
+
+    //Objetos Solve UI
+    public Slider SpeedSlider;
+    public Toggle HideExploredOnSolve;
+    public Toggle TurnOffLightOnSolve;
+
+    //Objetos Review UI
+    public Slider TimelineSlider;
+    public Toggle HideSolution;
+    public Toggle HideExplored;
+    public Toggle TurnOffLight;
+
+    public GameObject MainLight;
+    public Text InfoTextBox;
 
     //Iniciar Cámara
     public void SetUpCamera()
@@ -45,24 +65,60 @@ public class UIManager : MonoBehaviour
         camera.orthographicSize = Mathf.Max(WorldInfo.Size.x, WorldInfo.Size.y) / 2;
     }
 
-    //Alternar entre interfaces
+    //Funciones de Paint UI
     public void SwitchToPaint()
     {
         UISolving.SetActive(false);
         UIReview.SetActive(false);
         UIPainter.SetActive(true);
     }
+
+
+    //Funciones de Solving UI
     public void SwitchToSolve()
     {
         UIPainter.SetActive(false);
         UIReview.SetActive(false);
         UISolving.SetActive(true);
+
+        SpeedSlider.onValueChanged.AddListener(delegate { SpeedListener(); });
+        HideExploredOnSolve.onValueChanged.AddListener(delegate { HideExploredListener(HideExploredOnSolve); });
+        TurnOffLightOnSolve.onValueChanged.AddListener(delegate { ToggleLightListener(TurnOffLightOnSolve); });
     }
+    private void SpeedListener()
+    {
+        Solver.Speed = SpeedSlider.value;
+    }
+
+    //Funciones de Review UI
     public void SwitchToReview()
     {
         UIPainter.SetActive(false);
         UISolving.SetActive(false);
         UIReview.SetActive(true);
+
+        TimelineSlider.onValueChanged.AddListener(delegate { TimelineListener(); });
+        HideSolution.onValueChanged.AddListener(delegate { HideSolutionListener(); });
+        HideExplored.onValueChanged.AddListener(delegate { HideExploredListener(HideExplored); });
+        TurnOffLight.onValueChanged.AddListener(delegate { ToggleLightListener(TurnOffLight); });
+        InfoTextBox.text = "Nodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
     }
 
+    public void ToggleLightListener(Toggle toggle)
+    {
+        MainLight.SetActive(!toggle.isOn);
+    }
+
+    private void TimelineListener()
+    {
+        Solver.Timeline(TimelineSlider.value);
+    }
+    private void HideSolutionListener()
+    {
+        Solver.ShowSolution(HideSolution.isOn);
+    }
+    private void HideExploredListener(Toggle toggle)
+    {
+        Solver.ShowExplored(toggle.isOn);
+    }
 }

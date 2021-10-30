@@ -9,23 +9,22 @@ public class GeneralManager : MonoBehaviour
     //Scripts
     private UIManager UI;
     private WorldPainter World;
-    private AStarSolver Solver;
-    private AStarSolver2 Solver2;
+    //private AStarSolver Solver1;
+    private AStarSolver3 Solver;
 
     //Variables de estado
     private bool IsPainting = false;
-    private bool IsSolved = false;
+    private bool IsSolving = false;
 
     private void Start()
     {
         UI = GetComponent<UIManager>();
         World = GetComponent<WorldPainter>();
-        Solver = GetComponent<AStarSolver>();
-        Solver2 = GetComponent<AStarSolver2>();
+        //Solver1 = GetComponent<AStarSolver>();
+        Solver = GetComponent<AStarSolver3>();
         UI.enabled = true;
         World.enabled = true;
         Solver.enabled = false;
-        Solver2.enabled = false;
 
         //Establecer Cámara
         UI.SetUpCamera();
@@ -46,19 +45,21 @@ public class GeneralManager : MonoBehaviour
     private void Update()
     {
         if (IsPainting && !World.IsBrushActive) StartSolve();
+        else if (IsSolving && Solver.IsSolved) StartReview();
     }
     private void StartSolve()
     {
         IsPainting = false;
+        IsSolving = true;
         World.enabled = false;
-        Solver2.enabled = true;
+        Solver.enabled = true;
         UI.SwitchToSolve();
-        Solver2.Solve();
+        Solver.Solve();
     }
 
     private void StartReview()
     {
-        IsSolved = true;
+        IsSolving = false;
         UI.SwitchToReview();
     }
 
