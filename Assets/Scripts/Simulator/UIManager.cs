@@ -11,21 +11,38 @@ public class UIManager : MonoBehaviour
     public float targetaspect = 16f / 9f;
 
     //Interfaces
-    public GameObject UIPainter;
-    public GameObject UISolving;
-    public GameObject UIReview;
 
     //Objetos con los que interactúa
-    public AStarSolver3 Solver;
+    [Space(5)]
+    [Header("Script Symbiosis")]
+    public AStarSolver Solver;
+    public WorldPainter Painter;
 
     //Objetos Paint UI
+    [Space(5)]
+    [Header("Painter UI")]
+    public GameObject UIPainter;
+    public Text CurrentState;
+    public GameObject ForwardButton;
+    public GameObject BackButton;
+    //Colores
+    private Color InactiveRed = new Color(.4f, .4f, .4f);
+    private Color Red = new Color(1, .2f, 0);
+    private Color InactiveGreen = new Color(.6f, .6f, .6f);
+    private Color Green = new Color(.2f, 1, 0);
 
     //Objetos Solve UI
+    [Space(5)]
+    [Header("Solve UI")]
+    public GameObject UISolving;
     public Slider SpeedSlider;
     public Toggle HideExploredOnSolve;
     public Toggle TurnOffLightOnSolve;
 
     //Objetos Review UI
+    [Space(5)]
+    [Header("Review UI")]
+    public GameObject UIReview;
     public Slider TimelineSlider;
     public Toggle HideSolution;
     public Toggle HideExplored;
@@ -71,8 +88,145 @@ public class UIManager : MonoBehaviour
         UISolving.SetActive(false);
         UIReview.SetActive(false);
         UIPainter.SetActive(true);
-    }
+        Painter.AreObstaclesSet = !WorldInfo.ManualObstacles;
+        Painter.IsBeginningSet = !WorldInfo.ManualObjectives;
+        if (WorldInfo.ManualObstacles)
+        {
+            CurrentState.text = "Pintando Obstáculos";
+            if (WorldInfo.ManualObjectives)
+            {
+                ForwardButton.GetComponent<Image>().color = Green;
+                ForwardButton.GetComponentInChildren<Text>().text = "Pintar inicio";
+                ForwardButton.GetComponent<Button>().enabled = true;
+                BackButton.GetComponentInChildren<Text>().text = "...";
+                BackButton.GetComponent<Image>().color = InactiveRed;
+                BackButton.GetComponent<Button>().enabled = false;
+            }
+            else
+            {
+                ForwardButton.GetComponent<Image>().color = Green;
+                ForwardButton.GetComponentInChildren<Text>().text = "Simular";
+                ForwardButton.GetComponent<Button>().enabled = true;
+                BackButton.GetComponentInChildren<Text>().text = "...";
+                BackButton.GetComponent<Image>().color = InactiveRed;
+                BackButton.GetComponent<Button>().enabled = false;
+            }
+        }
+        else if (WorldInfo.ManualObjectives)
+        {
+            CurrentState.text = "Pintando Inicio";
 
+            ForwardButton.GetComponent<Image>().color = Green;
+            ForwardButton.GetComponentInChildren<Text>().text = "Pintar final";
+            ForwardButton.GetComponent<Button>().enabled = true;
+            BackButton.GetComponent<Image>().color = Red;
+            BackButton.GetComponentInChildren<Text>().text = "Modificar Obstáculos";
+            BackButton.GetComponent<Button>().enabled = true;
+        }
+        StartCoroutine(PaintInput());
+    }
+    private IEnumerator PaintInput()
+    {
+        while (Painter.IsBrushActive)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("ClickDown");
+                Painter.IsBrushLocked = true;
+                if (!Painter.AreObstaclesSet) StartCoroutine(Painter.ObstaclesBrush());
+                else if (!Painter.IsBeginningSet) StartCoroutine(Painter.DragBeginning());
+                else StartCoroutine(Painter.DragEnd());
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                Debug.Log("ClickUp");
+                Painter.IsBrushLocked = false;
+            }
+            else if (Input.GetKeyDown("return"))
+            {
+                Debug.Log("Enter");
+                Forward();
+            }
+            else if (Input.GetKeyDown("backspace"))
+            {
+                Debug.Log("BackSpace");
+                Back();
+            }
+            yield return null;
+        }
+    }
+    public void Forward()
+    {
+
+        Painter.IsBrushLocked = false;
+        if (!Painter.AreObstaclesSet)
+        {
+            CurrentState.text = "Pintando Inicio";
+
+            ForwardButton.GetComponent<Image>().color = Green;
+            ForwardButton.GetComponentInChildren<Text>().text = "Pintar final";
+            ForwardButton.GetComponent<Button>().enabled = true;
+
+            BackButton.GetComponent<Image>().color = Red;
+            BackButton.GetComponentInChildren<Text>().text = "Modificar Obstáculos";
+            BackButton.GetComponent<Button>().enabled = true;
+
+            Painter.AreObstaclesSet = true;
+            if (!WorldInfo.ManualObjectives) Painter.IsBrushActive = false;
+        }
+        else if (!Painter.IsBeginningSet && WorldInfo.Beginning != ConstCoordinates.Invalid)
+        {
+            CurrentState.text = "Pintando Final";
+
+            ForwardButton.GetComponent<Image>().color = Green;
+            ForwardButton.GetComponentInChildren<Text>().text = "Empezar Simulación";
+            ForwardButton.GetComponent<Button>().enabled = true;
+
+            BackButton.GetComponent<Image>().color = Red;
+            BackButton.GetComponentInChildren<Text>().text = "Modificar Inicio";
+            BackButton.GetComponent<Button>().enabled = true;
+
+            Painter.IsBeginningSet = true;
+        }
+        else if (WorldInfo.ManualObjectives && WorldInfo.Beginning != ConstCoordinates.Invalid && WorldInfo.End != ConstCoordinates.Invalid)
+        {
+            Painter.IsBrushActive = false;
+        }
+    }
+    public void Back()
+    {
+        Painter.IsBrushLocked = false;
+
+        if (Painter.IsBeginningSet)
+        {
+            CurrentState.text = "Pintando Inicio";
+
+            ForwardButton.GetComponent<Image>().color = Green;
+            ForwardButton.GetComponentInChildren<Text>().text = "Pintar final";
+            ForwardButton.GetComponent<Button>().enabled = true;
+
+            BackButton.GetComponent<Image>().color = Red;
+            BackButton.GetComponentInChildren<Text>().text = "Modificar Obstáculos";
+            BackButton.GetComponent<Button>().enabled = true;
+
+            Painter.IsBeginningSet = false;
+        }
+        else if (Painter.AreObstaclesSet)
+        {
+            CurrentState.text = "Pintando Obstáculos";
+
+            ForwardButton.GetComponent<Image>().color = Green;
+            ForwardButton.GetComponentInChildren<Text>().text = "Pintar inicio";
+            ForwardButton.GetComponent<Button>().enabled = true;
+
+            BackButton.GetComponent<Image>().color = InactiveRed;
+            BackButton.GetComponentInChildren<Text>().text = "...";
+            BackButton.GetComponent<Button>().enabled = false;
+
+            Painter.AreObstaclesSet = false;
+        }
+
+    }
 
     //Funciones de Solving UI
     public void SwitchToSolve()
@@ -97,18 +251,26 @@ public class UIManager : MonoBehaviour
         UISolving.SetActive(false);
         UIReview.SetActive(true);
 
+        HideExplored.isOn = Solver.ExploredContainer.gameObject.activeSelf;
+        TurnOffLight.isOn = !MainLight.activeSelf;
         TimelineSlider.onValueChanged.AddListener(delegate { TimelineListener(); });
         HideSolution.onValueChanged.AddListener(delegate { HideSolutionListener(); });
         HideExplored.onValueChanged.AddListener(delegate { HideExploredListener(HideExplored); });
         TurnOffLight.onValueChanged.AddListener(delegate { ToggleLightListener(TurnOffLight); });
-        InfoTextBox.text = "Nodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
+        if (Solver.IsPossible)
+        {
+            InfoTextBox.text = "Solución encontrada.\nCoste final: " + Solver.Cost + "\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
+        }
+        else
+        {
+            InfoTextBox.text = "No se ha encontrado solución.\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
+            HideSolution.gameObject.SetActive(false);
+        }
     }
-
     public void ToggleLightListener(Toggle toggle)
     {
         MainLight.SetActive(!toggle.isOn);
     }
-
     private void TimelineListener()
     {
         Solver.Timeline(TimelineSlider.value);

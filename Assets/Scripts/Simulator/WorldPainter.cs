@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class WorldPainter : MonoBehaviour
 {
     //Instancia y controla el mapa, el inicio, el final y los obstáculos
 
     //Prefabs
+    [Header("Prefabs")]
     public GameObject MapPrefab;
     public GameObject BeginningPrefab;
     public GameObject EndPrefab;
@@ -17,15 +18,23 @@ public class WorldPainter : MonoBehaviour
     private GameObject Map;
     private GameObject Beginning;
     private GameObject End;
+    [Space(5)]
+    [Header("Obstacle Container")]
     public Transform ObstaclesContainer;
     private List<GameObject> Obstacles = new List<GameObject>();
 
+    //Texto y botones
+
     //Pincel para selección manual
     private Ray ray => Camera.main.ScreenPointToRay(Input.mousePosition);
+    [HideInInspector]
     public bool IsBrushActive = false;
-    private bool IsBrushLocked = false;
-    private bool AreObstaclesSet = !WorldInfo.ManualObstacles;
-    private bool IsBeginningSet = !WorldInfo.ManualObjectives;
+    [HideInInspector]
+    public bool IsBrushLocked = false;
+    [HideInInspector]
+    public bool AreObstaclesSet;
+    [HideInInspector]
+    public bool IsBeginningSet;
 
     //Pintar Mundo
     public void PaintMap()
@@ -53,56 +62,8 @@ public class WorldPainter : MonoBehaviour
         End = Instantiate(EndPrefab, new Vector3(WorldInfo.End.x, 0.3f, WorldInfo.End.y), Quaternion.identity);
     }
 
-    //Pincel
-    private void Update()
-    {
-        if (IsBrushActive)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log("ClickDown");
-                IsBrushLocked = true;
-                if (!AreObstaclesSet) StartCoroutine(ObstaclesBrush());
-                else if (!IsBeginningSet) StartCoroutine(DragBeginning());
-                else StartCoroutine(DragEnd());
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                Debug.Log("ClickUp");
-                IsBrushLocked = false;
-            }
-            else if (Input.GetKeyDown("return"))
-            {
-                Debug.Log("Enter");
-                Forward();
-            }
-            else if (Input.GetKeyDown("backspace"))
-            {
-                Debug.Log("BackSpace");
-                GoBack();
-            }
-        }
-    }
-    public void Forward()
-    {
-        IsBrushLocked = false;
-        if (!AreObstaclesSet)
-        {
-            AreObstaclesSet = true;
-            if (!WorldInfo.ManualObjectives) IsBrushActive = false;
-        }
-        else if (!IsBeginningSet && WorldInfo.Beginning != ConstCoordinates.Invalid) IsBeginningSet = true;
-        else if (WorldInfo.ManualObjectives && WorldInfo.Beginning != ConstCoordinates.Invalid) IsBrushActive = false;
-    }
-
-    public void GoBack()
-    {
-        IsBrushLocked = false;
-        if (IsBeginningSet) IsBeginningSet = false;
-        else if (AreObstaclesSet) AreObstaclesSet = false;
-    }
     //Selección Manual
-    private IEnumerator ObstaclesBrush()
+    public IEnumerator ObstaclesBrush()
     {
         RaycastHit hit;
         Vector2Int Coordinates;
@@ -158,7 +119,7 @@ public class WorldPainter : MonoBehaviour
         }
         yield return null;
     }
-    private IEnumerator DragBeginning()
+    public IEnumerator DragBeginning()
     {
         RaycastHit hit;
         Vector2Int Coordinates;
@@ -194,7 +155,7 @@ public class WorldPainter : MonoBehaviour
         }
         yield return null;
     }
-    private IEnumerator DragEnd()
+    public IEnumerator DragEnd()
     {
         RaycastHit hit;
         Vector2Int Coordinates;

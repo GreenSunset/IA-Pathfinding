@@ -9,8 +9,7 @@ public class GeneralManager : MonoBehaviour
     //Scripts
     private UIManager UI;
     private WorldPainter World;
-    //private AStarSolver Solver1;
-    private AStarSolver3 Solver;
+    private AStarSolver Solver;
 
     //Variables de estado
     private bool IsPainting = false;
@@ -21,7 +20,7 @@ public class GeneralManager : MonoBehaviour
         UI = GetComponent<UIManager>();
         World = GetComponent<WorldPainter>();
         //Solver1 = GetComponent<AStarSolver>();
-        Solver = GetComponent<AStarSolver3>();
+        Solver = GetComponent<AStarSolver>();
         UI.enabled = true;
         World.enabled = true;
         Solver.enabled = false;
