@@ -146,12 +146,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456444030}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 1065914054}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -257,7 +257,6 @@ GameObject:
   - component: {fileID: 895279999}
   - component: {fileID: 895279998}
   - component: {fileID: 895280000}
-  - component: {fileID: 895280001}
   m_Layer: 0
   m_Name: SimulationManager
   m_TagString: Untagged
@@ -278,8 +277,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainCamera: {fileID: 963194225}
-  Painter: {fileID: 895280001}
-  targetaspect: 1.7777778
   MapPrefab: {fileID: 6495045808342976272, guid: f04f03e5a05702540a1789475479019d, type: 3}
   StartPrefab: {fileID: 9194595089237460820, guid: f251199825af50a4c93cd476314be7be, type: 3}
   EndPrefab: {fileID: 2053711608380531070, guid: 6906a57cd07c3754eb4d5db5b7b3c617, type: 3}
@@ -315,23 +312,6 @@ MonoBehaviour:
   ExploredContainer: {fileID: 1065914054}
   SolutionContainer: {fileID: 456444031}
   Speed: 5
---- !u!114 &895280001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895279997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02e5d89563a3f3149a94b0d2257f971e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BeginningPrefab: {fileID: 9194595089237460820, guid: f251199825af50a4c93cd476314be7be, type: 3}
-  EndPrefab: {fileID: 2053711608380531070, guid: 6906a57cd07c3754eb4d5db5b7b3c617, type: 3}
-  ObstaclePrefab: {fileID: 7378735193548317969, guid: bb906116be8c0e842a7cb28f12e8e2b2, type: 3}
-  AllDone: 0
-  ObstacleInstances: []
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +421,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 456444031}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
