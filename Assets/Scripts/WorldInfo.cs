@@ -15,8 +15,8 @@ public class WorldInfo : MonoBehaviour
     // Tipo de movimiento
     public static bool DoDiagonals = true;
     // Ajustes Manuales
-    public static bool ManualObstacles = false;
-    public static bool ManualObjectives = false;
+    public static bool ManualObstacles = true;
+    public static bool ManualObjectives = true;
     public static float CostWeight = 1; //Not implemented
     public static bool RealtimeSolution = true; //Not implemented
 }
