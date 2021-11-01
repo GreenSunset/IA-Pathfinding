@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WorldInfo : MonoBehaviour
 {
-    // Tamaño del mapa
     public static Vector2Int Size = new Vector2Int(10,10);
     // Posicion del Comienzo y Final
     public static Vector2Int Beginning = ConstCoordinates.Invalid;
