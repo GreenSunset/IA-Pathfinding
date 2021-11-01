@@ -18,6 +18,6 @@ public class WorldInfo : MonoBehaviour
     public static bool ManualObstacles = true;
     public static bool ManualObjectives = true;
     public static float CostWeight = 1; //Not implemented
-    public static bool RealtimeSolution = true; //Not implemented
+    public static bool RealtimeSolution = true;
     public static bool ConstDiagonalCost = true;
 }

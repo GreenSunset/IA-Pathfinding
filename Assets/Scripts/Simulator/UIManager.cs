@@ -39,7 +39,6 @@ public class UIManager : MonoBehaviour
     public GameObject UISolving;
     public Slider SpeedSlider;
     public Toggle HideExploredOnSolve;
-    public Toggle TurnOffLightOnSolve;
 
     //Objetos Review UI
     [Space(5)]
@@ -48,9 +47,7 @@ public class UIManager : MonoBehaviour
     public Slider TimelineSlider;
     public Toggle HideSolution;
     public Toggle HideExplored;
-    public Toggle TurnOffLight;
 
-    public GameObject MainLight;
     public Text InfoTextBox;
 
     //Objetos Redo UI
@@ -61,6 +58,7 @@ public class UIManager : MonoBehaviour
     public Toggle DiagonalsToggle;
     public Toggle EditWorldToggle;
     public Toggle RealTimeToggle;
+    public Toggle ConstDiagonalCostToggle;
 
     //Iniciar Cámara
     public void SetUpCamera()
@@ -251,15 +249,12 @@ public class UIManager : MonoBehaviour
 
         SpeedSlider.value = Solver.Speed;
         HideExploredOnSolve.isOn = Solver.ExploredContainer.gameObject.activeSelf;
-        TurnOffLightOnSolve.isOn = !MainLight.activeSelf;
 
         SpeedSlider.onValueChanged.RemoveAllListeners();
         HideExploredOnSolve.onValueChanged.RemoveAllListeners();
-        TurnOffLightOnSolve.onValueChanged.RemoveAllListeners();
 
         SpeedSlider.onValueChanged.AddListener(delegate { SpeedListener(); });
         HideExploredOnSolve.onValueChanged.AddListener(delegate { HideExploredListener(HideExploredOnSolve); });
-        TurnOffLightOnSolve.onValueChanged.AddListener(delegate { ToggleLightListener(TurnOffLightOnSolve); });
     }
     private void SpeedListener()
     {
@@ -277,17 +272,14 @@ public class UIManager : MonoBehaviour
         TimelineSlider.value = Solver.Step;
         HideSolution.isOn = Solver.SolutionContainer.gameObject.activeSelf;
         HideExplored.isOn = Solver.ExploredContainer.gameObject.activeSelf;
-        TurnOffLight.isOn = !MainLight.activeSelf;
 
         TimelineSlider.onValueChanged.RemoveAllListeners();
         HideSolution.onValueChanged.RemoveAllListeners();
         HideExplored.onValueChanged.RemoveAllListeners();
-        TurnOffLight.onValueChanged.RemoveAllListeners();
 
         TimelineSlider.onValueChanged.AddListener(delegate { TimelineListener(); });
         HideSolution.onValueChanged.AddListener(delegate { HideSolutionListener(); });
         HideExplored.onValueChanged.AddListener(delegate { HideExploredListener(HideExplored); });
-        TurnOffLight.onValueChanged.AddListener(delegate { ToggleLightListener(TurnOffLight); });
         if (Solver.IsPossible)
         {
             InfoTextBox.text = "Solución encontrada.\nCoste final: " + Solver.Cost + "\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
@@ -297,10 +289,6 @@ public class UIManager : MonoBehaviour
             InfoTextBox.text = "No se ha encontrado solución.\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
             HideSolution.gameObject.SetActive(false);
         }
-    }
-    private void ToggleLightListener(Toggle toggle)
-    {
-        MainLight.SetActive(!toggle.isOn);
     }
     private void TimelineListener()
     {
@@ -333,16 +321,19 @@ public class UIManager : MonoBehaviour
         DiagonalsToggle.isOn = WorldInfo.DoDiagonals;
         EditWorldToggle.isOn = false;
         RealTimeToggle.isOn = WorldInfo.RealtimeSolution;
+        ConstDiagonalCostToggle.isOn = WorldInfo.ConstDiagonalCost;
 
         HeuristicSlider.onValueChanged.RemoveAllListeners();
         DiagonalsToggle.onValueChanged.RemoveAllListeners();
         EditWorldToggle.onValueChanged.RemoveAllListeners();
         RealTimeToggle.onValueChanged.RemoveAllListeners();
+        ConstDiagonalCostToggle.onValueChanged.RemoveAllListeners();
 
         HeuristicSlider.onValueChanged.AddListener(delegate { HeuristicSliderListener(); });
         DiagonalsToggle.onValueChanged.AddListener(delegate { DiagonalsToggleListener(); });
         EditWorldToggle.onValueChanged.AddListener(delegate { EditWorldToggleListener(); });
         RealTimeToggle.onValueChanged.AddListener(delegate { RealTimeToggleListener(); });
+        ConstDiagonalCostToggle.onValueChanged.AddListener(delegate { ConstDiagonalCostToggleListener(); });
     }
     private void HeuristicSliderListener()
     {
@@ -375,6 +366,10 @@ public class UIManager : MonoBehaviour
     private void RealTimeToggleListener()
     {
         WorldInfo.RealtimeSolution = RealTimeToggle.isOn;
+    }
+    private void ConstDiagonalCostToggleListener()
+    {
+        WorldInfo.ConstDiagonalCost = ConstDiagonalCostToggle.isOn;
     }
     public void Restart()
     {

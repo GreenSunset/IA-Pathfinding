@@ -56,4 +56,8 @@ public class ToggleFunctions : MonoBehaviour
     {
         WorldInfo.RealtimeSolution = myToggle.isOn;
     }
+    public void DiagonalCostToggle(Toggle myToggle)
+    {
+        WorldInfo.ConstDiagonalCost = !myToggle.isOn;
+    }
 }
