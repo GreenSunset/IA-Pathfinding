@@ -10,7 +10,9 @@ public class UIManager : MonoBehaviour
     public GameObject MainCamera;
     public float targetaspect = 16f / 9f;
 
-    //Interfaces
+    //Comunicación
+    [HideInInspector]
+    public bool RestartSignal = false;
 
     //Objetos con los que interactúa
     [Space(5)]
@@ -51,6 +53,15 @@ public class UIManager : MonoBehaviour
     public GameObject MainLight;
     public Text InfoTextBox;
 
+    //Objetos Redo UI
+    [Space(5)]
+    [Header("Redo UI")]
+    public GameObject UIRedo;
+    public Slider HeuristicSlider;
+    public Toggle DiagonalsToggle;
+    public Toggle EditWorldToggle;
+    public Toggle RealTimeToggle;
+
     //Iniciar Cámara
     public void SetUpCamera()
     {
@@ -88,6 +99,8 @@ public class UIManager : MonoBehaviour
         UISolving.SetActive(false);
         UIReview.SetActive(false);
         UIPainter.SetActive(true);
+        UIRedo.SetActive(false);
+
         Painter.AreObstaclesSet = !WorldInfo.ManualObstacles;
         Painter.IsBeginningSet = !WorldInfo.ManualObjectives;
         if (WorldInfo.ManualObstacles)
@@ -234,6 +247,15 @@ public class UIManager : MonoBehaviour
         UIPainter.SetActive(false);
         UIReview.SetActive(false);
         UISolving.SetActive(true);
+        UIRedo.SetActive(false);
+
+        SpeedSlider.value = Solver.Speed;
+        HideExploredOnSolve.isOn = Solver.ExploredContainer.gameObject.activeSelf;
+        TurnOffLightOnSolve.isOn = !MainLight.activeSelf;
+
+        SpeedSlider.onValueChanged.RemoveAllListeners();
+        HideExploredOnSolve.onValueChanged.RemoveAllListeners();
+        TurnOffLightOnSolve.onValueChanged.RemoveAllListeners();
 
         SpeedSlider.onValueChanged.AddListener(delegate { SpeedListener(); });
         HideExploredOnSolve.onValueChanged.AddListener(delegate { HideExploredListener(HideExploredOnSolve); });
@@ -250,9 +272,18 @@ public class UIManager : MonoBehaviour
         UIPainter.SetActive(false);
         UISolving.SetActive(false);
         UIReview.SetActive(true);
+        UIRedo.SetActive(false);
 
+        TimelineSlider.value = Solver.Step;
+        HideSolution.isOn = Solver.SolutionContainer.gameObject.activeSelf;
         HideExplored.isOn = Solver.ExploredContainer.gameObject.activeSelf;
         TurnOffLight.isOn = !MainLight.activeSelf;
+
+        TimelineSlider.onValueChanged.RemoveAllListeners();
+        HideSolution.onValueChanged.RemoveAllListeners();
+        HideExplored.onValueChanged.RemoveAllListeners();
+        TurnOffLight.onValueChanged.RemoveAllListeners();
+
         TimelineSlider.onValueChanged.AddListener(delegate { TimelineListener(); });
         HideSolution.onValueChanged.AddListener(delegate { HideSolutionListener(); });
         HideExplored.onValueChanged.AddListener(delegate { HideExploredListener(HideExplored); });
@@ -267,7 +298,7 @@ public class UIManager : MonoBehaviour
             HideSolution.gameObject.SetActive(false);
         }
     }
-    public void ToggleLightListener(Toggle toggle)
+    private void ToggleLightListener(Toggle toggle)
     {
         MainLight.SetActive(!toggle.isOn);
     }
@@ -282,5 +313,71 @@ public class UIManager : MonoBehaviour
     private void HideExploredListener(Toggle toggle)
     {
         Solver.ShowExplored(toggle.isOn);
+    }
+    public void ExitApp()
+    {
+        Application.Quit();
+    }
+    //Funciones de Redo UI
+
+    public void SwitchToRedo()
+    {
+        UIPainter.SetActive(false);
+        UISolving.SetActive(false);
+        UIReview.SetActive(false);
+        UIRedo.SetActive(true);
+
+        if (WorldInfo.Heuristic.Equals(new ManhattanHeuristic())) HeuristicSlider.value = 0;
+        else if (WorldInfo.Heuristic.Equals(new EuclideanHeuristic())) HeuristicSlider.value = 1;
+        else if (WorldInfo.Heuristic.Equals(new ChebyshovHeuristic())) HeuristicSlider.value = 2;
+        DiagonalsToggle.isOn = WorldInfo.DoDiagonals;
+        EditWorldToggle.isOn = false;
+        RealTimeToggle.isOn = WorldInfo.RealtimeSolution;
+
+        HeuristicSlider.onValueChanged.RemoveAllListeners();
+        DiagonalsToggle.onValueChanged.RemoveAllListeners();
+        EditWorldToggle.onValueChanged.RemoveAllListeners();
+        RealTimeToggle.onValueChanged.RemoveAllListeners();
+
+        HeuristicSlider.onValueChanged.AddListener(delegate { HeuristicSliderListener(); });
+        DiagonalsToggle.onValueChanged.AddListener(delegate { DiagonalsToggleListener(); });
+        EditWorldToggle.onValueChanged.AddListener(delegate { EditWorldToggleListener(); });
+        RealTimeToggle.onValueChanged.AddListener(delegate { RealTimeToggleListener(); });
+    }
+    private void HeuristicSliderListener()
+    {
+        Debug.Log("Heurictic Saved: " + (int)HeuristicSlider.value);
+        switch ((int)HeuristicSlider.value)
+        {
+            case 0:
+                WorldInfo.Heuristic = new ManhattanHeuristic();
+                break;
+            case 1:
+                WorldInfo.Heuristic = new EuclideanHeuristic();
+                break;
+            case 2:
+                WorldInfo.Heuristic = new ChebyshovHeuristic();
+                break;
+            default:
+                WorldInfo.Heuristic = new EuclideanHeuristic();
+                break;
+        }
+    }
+    private void DiagonalsToggleListener()
+    {
+       WorldInfo.DoDiagonals = DiagonalsToggle.isOn;
+    }
+    private void EditWorldToggleListener()
+    {
+        WorldInfo.ManualObjectives = EditWorldToggle.isOn;
+        WorldInfo.ManualObstacles = EditWorldToggle.isOn;
+    }
+    private void RealTimeToggleListener()
+    {
+        WorldInfo.RealtimeSolution = RealTimeToggle.isOn;
+    }
+    public void Restart()
+    {
+        RestartSignal = true;
     }
 }

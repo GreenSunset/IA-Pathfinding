@@ -80,15 +80,14 @@ public class ButtonsFunctions : MonoBehaviour
         }
     }
     // Generar la distancia del inicio y final
-    // Poner el punto de comienzo en un punto random
-    // Ver si se puede poner el final
+    // Poner el punto de comienzo en un punto random a una distancia del centro que garantize que se puede poner el segundo punto a la distancia requerida
+    // Poner el final
     private void GenerateObjectives(float distance)
     {
-        //bool setBegin = false;
         int chebysovDistance = (int)Mathf.Round((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y) * (int)distance / 100);
 
         //Dario
-        int distanceFromCenter = chebysovDistance - ((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y));
+        int distanceFromCenter = chebysovDistance - ((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y)/2);
         if (distanceFromCenter > 0)
         {
             int yDiff, xDiff;
@@ -108,9 +107,11 @@ public class ButtonsFunctions : MonoBehaviour
         {
             WorldInfo.Beginning = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
         }
+        Debug.Log("Beginning: " + WorldInfo.Beginning.x + ", " + WorldInfo.Beginning.y);
         do
         {
             WorldInfo.End = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
+            Debug.Log("End: " + WorldInfo.End.x + ", " + WorldInfo.End.y);
         } while (Mathf.Max(Mathf.Abs(WorldInfo.End.x - WorldInfo.Beginning.x), Mathf.Abs(WorldInfo.End.y - WorldInfo.Beginning.y)) < chebysovDistance);
     }
 }

@@ -8,7 +8,7 @@ public abstract class HeuristicFunc
     public abstract float UnitaryDiagonal();
 }
 
-public class ManhatanHeuristic : HeuristicFunc
+public class ManhattanHeuristic : HeuristicFunc
 {
     public override float Function(Vector2Int Start, Vector2Int End)
     {

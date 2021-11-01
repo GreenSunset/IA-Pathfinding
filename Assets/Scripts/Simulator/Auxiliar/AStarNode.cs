@@ -16,18 +16,12 @@ public class ExploredNode
     public Vector2Int Position;
     public float Cost;
     public ExploredNode Parent;
-    public GameObject Instance;
 
     public ExploredNode(AStarNode node)
     {
         Position = node.Position;
         Cost = node.Cost;
         Parent = node.Parent;
-    }
-
-    public void ToggleHide()
-    {
-        Instance.SetActive(!Instance.activeSelf);
     }
 }
 

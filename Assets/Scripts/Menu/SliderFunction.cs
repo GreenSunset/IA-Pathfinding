@@ -30,7 +30,7 @@ public class SliderFunction : MonoBehaviour
         switch ((int)mySliderSelection.value)
         {
             case 0:
-                WorldInfo.Heuristic = new ManhatanHeuristic();
+                WorldInfo.Heuristic = new ManhattanHeuristic();
                 break;
             case 1:
                 WorldInfo.Heuristic = new EuclideanHeuristic();

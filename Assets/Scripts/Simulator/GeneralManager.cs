@@ -45,9 +45,12 @@ public class GeneralManager : MonoBehaviour
     {
         if (IsPainting && !World.IsBrushActive) StartSolve();
         else if (IsSolving && Solver.IsSolved) StartReview();
+        else if (UI.RestartSignal) Restart();
     }
     private void StartSolve()
     {
+        WorldInfo.ManualObjectives = false;
+        WorldInfo.ManualObstacles = false;
         IsPainting = false;
         IsSolving = true;
         World.enabled = false;
@@ -60,6 +63,23 @@ public class GeneralManager : MonoBehaviour
     {
         IsSolving = false;
         UI.SwitchToReview();
+    }
+
+    private void Restart()
+    {
+        //Generar Mundo
+        UI.RestartSignal = false;
+        Solver.Restart();
+        World.enabled = true;
+        Solver.enabled = false;
+
+        if (WorldInfo.ManualObjectives || WorldInfo.ManualObstacles)
+        {
+            IsPainting = true;
+            World.IsBrushActive = true;
+            UI.SwitchToPaint();
+        }
+        else StartSolve();
     }
 
 }

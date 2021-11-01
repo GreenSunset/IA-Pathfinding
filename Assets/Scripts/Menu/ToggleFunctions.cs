@@ -52,4 +52,8 @@ public class ToggleFunctions : MonoBehaviour
             Debug.Log("4 movimientos.");
         }
     }
+    public void RealTimeToggle(Toggle myToggle)
+    {
+        WorldInfo.RealtimeSolution = myToggle.isOn;
+    }
 }

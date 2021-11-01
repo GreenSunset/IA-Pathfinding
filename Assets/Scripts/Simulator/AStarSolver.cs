@@ -28,23 +28,22 @@ public class AStarSolver : MonoBehaviour
 
     //Variables de opciones
     [HideInInspector]
-    public float Speed = 4;
+    public float Speed = 5;
     [HideInInspector]
     public int Step;
-    [HideInInspector]
-    public float Threshold = 0.2f;
+    private float Threshold = 0.2f;
 
     //Datos
     private Stopwatch StopWatch;
     public float Cost { get; private set; }
     public bool IsPossible { get; private set; }
-    public int NodesExplored {get; private set; }
+    public int NodesExplored { get; private set; }
     public int NodesGenerated { get; private set; }
     public double SimulationTime { get; private set; }
     public float TotalTime { get; private set; }
     private float TimeMark;
 
-    //Inicio
+    //Inicio y reinicio
     public void Solve()
     {
         StopWatch = new Stopwatch();
@@ -65,6 +64,20 @@ public class AStarSolver : MonoBehaviour
 
         if (WorldInfo.RealtimeSolution) StartCoroutine(RealtimeSolution());
         else InmediateSolution();
+    }
+    public void Restart()
+    {
+        StopWatch.Reset();
+        for (int i = 0; i < Solution.Count; i++) Destroy(Solution[i]);
+        for (int i = 0; i < ExploredWaypoints.Count; i++) Destroy(ExploredWaypoints[i]);
+        ExpandIndex = 0;
+        IsPossible = true;
+        IsSolved = false;
+        NodesExplored = 0;
+        NodesGenerated = 0;
+        SimulationTime = 0;
+        TotalTime = 0;
+        Speed = 5;
     }
 
     //Métodos Auxiliares
@@ -132,8 +145,10 @@ public class AStarSolver : MonoBehaviour
             Exploring = new ExploredNode(Candidates[ExpandIndex]);
         }
         if (IsPossible) Explored.Add(Exploring);
+        StartCoroutine(GenerateExplored());
         StartCoroutine(GenerateSolution());
         IsSolved = true;
+        Step = Explored.Count;
         StopWatch.Stop();
         return IsPossible;
     }
@@ -210,7 +225,7 @@ public class AStarSolver : MonoBehaviour
     private void UpdateNodeValue(ExploredNode Origin, Vector2Int To, bool diagonal = false)
     {
         AStarNode Destiny = Candidates.Find(x => x.Position == To);
-        float NewCost = Origin.Cost + (diagonal ? WorldInfo.Heuristic.UnitaryDiagonal() : 1);
+        float NewCost = Origin.Cost + (diagonal ? WorldInfo.ConstDiagonalCost ? 2 : WorldInfo.Heuristic.UnitaryDiagonal() : 1);
         if (Destiny == null)
         {
             Candidates.Add(new AStarNode(To, NewCost, WorldInfo.Heuristic.Function(To, WorldInfo.End), Origin));
@@ -249,7 +264,15 @@ public class AStarSolver : MonoBehaviour
         }
 
     }
-
+    private IEnumerator GenerateExplored()
+    {
+        for (int i = 0; i < ExploredWaypoints.Count; i++) Destroy(ExploredWaypoints[i]);
+        for (int i = 0; i < Explored.Count; i++)
+        {
+            ExploredWaypoints.Add(Instantiate(ExploredPrefab, new Vector3(Explored[i].Position.x, .3f, Explored[i].Position.y), Quaternion.identity, ExploredContainer));
+            if (Time.deltaTime > Threshold) yield return null;
+        }
+    }
     //Control de visualización
     public void ShowExplored(bool show)
     {
@@ -261,7 +284,7 @@ public class AStarSolver : MonoBehaviour
     }
     public void Timeline(float time)
     {
-        
+
         int GoToStep = (int)(((float)ExploredWaypoints.Count) * time / 100f);
         if (Step < GoToStep)
         {
@@ -273,41 +296,4 @@ public class AStarSolver : MonoBehaviour
             for (; Step > GoToStep;) ExploredWaypoints[--Step].SetActive(false);
         }
     }
-    /*
-    // Trazas
-
-    // Estado del Algoritmo
-    private bool IsSolved = false;
-    private bool IsPossible = true;
-
-    // Conjuntos e índices del algoritmo
-    public float Speed = 1;
-
-    //Tengo que meter estos en algún lugar estático
-    private Vector2Int[] BasicDirections = new Vector2Int[4]
-        {new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0)};
-    private Vector2Int[] Diagonals = new Vector2Int[4]
-        {new Vector2Int(-1, -1), new Vector2Int(1, -1), new Vector2Int(-1, 1), new Vector2Int(1, 1)};
-
-    public void Restart()
-    {
-        Solution = null;
-        Candidates = new List<AStarNode>();
-        for (int i = 0; Explored != null && i < Explored.Count; i++)
-        {
-            Destroy(Explored[i].Instance);
-        }
-        Explored = new List<ExploredNode>();
-        ExpandIndex = 0;
-        IsSolved = false;
-        IsPossible = true;
-    }
-
-    
-
-    
-
-
-
-     /**/
 }
