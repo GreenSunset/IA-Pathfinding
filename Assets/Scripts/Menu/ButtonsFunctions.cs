@@ -85,13 +85,12 @@ public class ButtonsFunctions : MonoBehaviour
     private void GenerateObjectives(float distance)
     {
         int chebysovDistance = (int)Mathf.Round((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y) * (int)distance / 100);
-
         //Dario
-        int distanceFromCenter = chebysovDistance - ((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y)/2);
+        int distanceFromCenter = chebysovDistance - ((WorldInfo.Size.x > WorldInfo.Size.y ? WorldInfo.Size.x : WorldInfo.Size.y)/2) - 1;
         if (distanceFromCenter > 0)
         {
             int yDiff, xDiff;
-            if (Random.Range(0, 2) % 2 == 0)
+            if (distanceFromCenter > (WorldInfo.Size.y - 1) / 2 || (!(distanceFromCenter > (WorldInfo.Size.x - 1) / 2) && Random.Range(0, 2) % 2 == 0))
             {
                 xDiff = Random.Range(WorldInfo.Size.x % 2 == 0 ? 1 : 0, (WorldInfo.Size.x - 1) / 2 + 1);
                 yDiff = Random.Range(xDiff < distanceFromCenter ? distanceFromCenter : WorldInfo.Size.y % 2 == 0 ? 1 : 0, (WorldInfo.Size.y - 1) / 2 + 1);
@@ -101,17 +100,19 @@ public class ButtonsFunctions : MonoBehaviour
                 yDiff = Random.Range(WorldInfo.Size.y % 2 == 0 ? 1 : 0, (WorldInfo.Size.y - 1) / 2 + 1);
                 xDiff = Random.Range(yDiff < distanceFromCenter ? distanceFromCenter : WorldInfo.Size.x % 2 == 0 ? 1 : 0, (WorldInfo.Size.x - 1) / 2 + 1);
             }
-            WorldInfo.Beginning = new Vector2Int((Random.Range(0, 2) % 2 == 0? 1 : -1) * xDiff + (WorldInfo.Size.x - 1 / 2) + 1, (Random.Range(0, 2) % 2 == 0 ? 1 : -1) * yDiff + (WorldInfo.Size.y - 1 / 2) + 1);
+            WorldInfo.Beginning = new Vector2Int((Random.Range(0, 2) % 2 == 0? ((WorldInfo.Size.x - 1) / 2 + (WorldInfo.Size.x % 2 == 0 ? 1 : 0)) + xDiff : ((WorldInfo.Size.x - 1) / 2) - xDiff), (Random.Range(0, 2) % 2 == 0 ? ((WorldInfo.Size.y - 1) / 2 + (WorldInfo.Size.x % 2 == 0 ? 1 : 0)) + yDiff : ((WorldInfo.Size.y - 1) / 2) - yDiff));
         }
         else
         {
             WorldInfo.Beginning = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
         }
         Debug.Log("Beginning: " + WorldInfo.Beginning.x + ", " + WorldInfo.Beginning.y);
+        int limit = 1000;
         do
         {
             WorldInfo.End = new Vector2Int(Random.Range(0, WorldInfo.Size.x), Random.Range(0, WorldInfo.Size.y));
             Debug.Log("End: " + WorldInfo.End.x + ", " + WorldInfo.End.y);
-        } while (Mathf.Max(Mathf.Abs(WorldInfo.End.x - WorldInfo.Beginning.x), Mathf.Abs(WorldInfo.End.y - WorldInfo.Beginning.y)) < chebysovDistance);
+            limit--;
+        } while (limit > 0 && Mathf.Max(Mathf.Abs(WorldInfo.End.x - WorldInfo.Beginning.x), Mathf.Abs(WorldInfo.End.y - WorldInfo.Beginning.y)) < chebysovDistance - 1);
     }
 }

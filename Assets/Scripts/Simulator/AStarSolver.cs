@@ -36,6 +36,7 @@ public class AStarSolver : MonoBehaviour
     //Datos
     private Stopwatch StopWatch;
     public float Cost { get; private set; }
+    public float Lenght { get; private set; }
     public bool IsPossible { get; private set; }
     public int NodesExplored { get; private set; }
     public int NodesGenerated { get; private set; }
@@ -254,11 +255,12 @@ public class AStarSolver : MonoBehaviour
                 aux = aux.Parent;
                 //if (Time.deltaTime > ) yield return null; //Permite realentizar el reconocimiento de la solución para que no se ejecute en un solo frame
             }
+            Lenght = Solution.Count;
             for (int i = Solution.Count - 1; i >= 0; i--)
             {
                 Solution[i].SetActive(true);
                 if (Speed > 99 && Time.deltaTime > Threshold) yield return null;
-                else if (Speed != 0 && Speed <= 99) yield return new WaitForSeconds(.2f / Speed);
+                else if (Speed != 0 && Speed <= 99) yield return new WaitForSeconds(.02f / Speed);
                 else while (Speed == 0) yield return null;
             }
         }

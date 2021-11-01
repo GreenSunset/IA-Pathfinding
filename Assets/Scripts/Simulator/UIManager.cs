@@ -282,7 +282,7 @@ public class UIManager : MonoBehaviour
         HideExplored.onValueChanged.AddListener(delegate { HideExploredListener(HideExplored); });
         if (Solver.IsPossible)
         {
-            InfoTextBox.text = "Solución encontrada.\nCoste final: " + Solver.Cost + "\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
+            InfoTextBox.text = "Solución encontrada.\nCoste final: " + Solver.Cost + "\nLongitud: " + Solver.Lenght + "\nNodos Generados: " + Solver.NodesGenerated + "\nNodos Explorados: " + Solver.NodesExplored + "\nTiempo de simulación: " + Solver.SimulationTime + "\nTiempo total: " + Solver.TotalTime;
         }
         else
         {
@@ -306,8 +306,9 @@ public class UIManager : MonoBehaviour
     {
         Application.Quit();
     }
-    //Funciones de Redo UI
 
+
+    //Funciones de Redo UI
     public void SwitchToRedo()
     {
         UIPainter.SetActive(false);
